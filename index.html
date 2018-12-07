@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="custom/images/apple-icon.png">
+  <link rel="icon" type="image/png" href="custom/images/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Geo Dash
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <link href="https://cdn.materialdesignicons.com/2.7.94/css/materialdesignicons.css" rel="stylesheet" type="text/css">
+  <!-- Demo Dependencies -->
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="custom/preload.css" />
+  <link rel="stylesheet" href="custom/leaflet-routing-machine.css" />
+<!--
+<link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+-->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css" type="text/css">
+  <link rel="stylesheet" href="custom/MarkerCluster.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.css"/>
+  <link rel="stylesheet" href="custom/Leaflet.StyleEditor.min.css"/>
+  <!-- CSS Files -->
+  <link href="custom/material-dashboard.css" rel="stylesheet" />
+
+  <link href="custom/app.css" rel="stylesheet" />
+  <style>
+
+
+
+</style>
+</head>
+
+<body class="dark-edition">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="orange" data-background-color="black" data-image="custom/images/sidebar-1.jpg">
+
+      <div class="logo">
+        <a href="#" class="simple-text logo-normal">
+          <img src="custom/images/geodash.svg" height='50' >
+          <b>Geo Dash</b>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li name="menu" class="nav-item active mm" id="maplink">
+            <a class="nav-link" href="#">
+              <i class="mdi mdi-truck-fast"></i>
+              <p>Maps</p>
+            </a>
+          </li>
+           <li name="menu" class="nav-item " id="menuWrangle">
+            <a class="nav-link" href="">
+              <i class="material-icons">dashboard</i>
+              <p>Wrangle Input</p>
+            </a>
+          </li>
+          <li name="menu" class="nav-item " id="chorostart">
+            <a class="nav-link" href="#">
+              <i class="mdi mdi-television-guide"></i>
+              <p>Choropleth</p>
+            </a>
+          </li>
+          <li class="nav-item dropdown" id="functionlink">
+                <a class="nav-link dropdown-toggle" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="mdi mdi-language-javascript"></i>
+
+                  <p class="">
+                    Functions
+                  </p>
+                </a>
+                <div id="funcdrop" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a id="clean" class="dropdown-item" href="javascript:void(0)">Clean Coords</a>
+                  <a id="toPolyline" class="dropdown-item" href="javascript:void(0)">To Polyline</a>
+                  <a id="clusterKmeans" class="dropdown-item" href="javascript:void(0)">Cluster Kmeans</a>
+                  <a id="clusterDBscan" class="dropdown-item" href="javascript:void(0)">cluster DBscan</a>
+                  <a id="distPoint" class="dropdown-item" href="javascript:void(0)">Point Distance</a>
+
+                </div>
+          </li>
+          <li name="menu" class="nav-item " id="tablelink">
+            <a class="nav-link" href="#" id="geocodingbtn">
+              <i class="mdi mdi-table-large"></i>
+              <p>GeoCoding</p>
+            </a>
+          </li>
+          <li name="menu" class="nav-item " id="geolink">
+            <a class="nav-link" href="#" id="geo-stats">
+              <i class="mdi mdi-map-marker-circle"></i>
+              <p>Geo-Stats</p>
+            </a>
+          </li>
+          <li name="menu" class="nav-item dropdown" id="chartlink">
+            <a class="nav-link dropdown-toggle" id="chartDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+              <i class="material-icons">bubble_chart</i>
+              <p>Charting/Static</p>
+            </a>
+            <div id="menuchart" class="dropdown-menu" aria-labelledby="chartDrop">
+              <a id="chartJS" data-toggle="modal" data-target="#chartjsModal" class="dropdown-item">ChartJs</a>
+              <a id="C3Chart" data-toggle="modal" data-target="#c3Modal" class="dropdown-item">C3 Charts</a>
+              <a id="gaugeChart" data-toggle="modal" data-target="#c3Gauge" class="dropdown-item">C3 Gauge</a>
+            </div>
+          </li>
+          <li class="nav-item  dropdown" id="animlink"><a class="nav-link dropdown-toggle" href="javscript:void(0)" id="navBtnDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 0;"><i class="mdi mdi-poll" style=""></i><p>D3/Animated Plots</p></a>
+                <div class="dropdown-menu" aria-labelledby="navBtnDrop">
+                  <a id="animateRoute" data-target="d3modal" class="dropdown-item" href="javascript:void(0)">D3 Route</a>
+                  <a id="d3modal" class="dropdown-item" href="javascript:void(0)">D3 Poly</a>
+                  <a id="d3stepper" class="dropdown-item" href="javascript:void(0)">D3 Stepper</a>
+                  <a id="degreeToRadian" class="dropdown-item" href="javascript:void(0)">degreeToRadian</a>
+                  <a id="radiansToDegree" class="dropdown-item" href="javascript:void(0)">radiansToDegree</a>
+                  <a id="poilink" class="dropdown-item" href="javascript:void(0)">AZ POI</a>
+                </div>
+          </li>
+          <li name="menu" class="nav-item " id="infolink">
+            <a class="nav-link" href="#">
+              <i class="material-icons">notifications</i>
+              <p>Info</p>
+            </a>
+          </li>
+<div class="container" id="stepper-main">
+  <div id="controls" class="row">
+    <div class="col-md-12">
+      <button id="reload" class="btn btn-primary">Reload</button>
+      <div id="slider-div">
+        <label>TimeFactor: <span id="date-label"></span></label>
+        <div id="date-slider" class="slider"></div>
+      </div>
+      <div id="slider-div">
+        <label>MileageCluster: <span id="mile-label"></span></label>
+        <div id="mile-slider" class="slider slider-warning"></div>
+      </div>
+    </div>
+  </div>
+  ...
+</div>
+
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+
+            <ul class="navbar-nav">
+
+
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <div id="mapwrap" style="width:'100%';">
+      <div id="map">
+        <div id="layerIn"></div>
+      </div>
+</div>
+
+  <form >
+  <div class="form-group" style="padding-top:18px;" >
+    <label for="geoInput" style="padding-top:15px;">Load geojson file here</label >
+    <textarea class="form-control" id="geoInput" rows="10"></textarea>
+  </div>
+  <button id="btnInput" type="button" class="btn btn-primary">Load geojson</button>
+  <button id="btnInputClear" type="button" class="btn btn-danger">Clear Map and Text</button>
+</form>
+</div>
+
+
+
+<div class="col-sm-6">
+  <div id="maptwowrap">
+<div id="maptwo" style="margin-top:0px;">
+  <div id="layerOut"></div>
+</div>
+  <div id="dashboard">
+    <div id="distance">
+      <span></span>m
+    </div>
+    <div>
+      <span id="time"></span> h
+    </div>
+    <div>
+      <span id="date">21 oct 2015</span>
+    </div>
+    <div>
+      <span id="locality"></span>
+    </div>
+  </div>
+</div>
+
+  <form>
+
+  <div class="form-group" style="padding-top:18px;">
+    <label for="geoOutput" style="padding-top:15px;">Output from file here</label>
+    <textarea class="form-control" id="geoOutput" rows="10"></textarea>
+  </div>
+<button id="btnOutput" type="button" class="btn btn-primary">Output geojson</button>
+<button id="btnOutputClear" type="button" class="btn btn-danger">Clear Map and Text</button>
+</form>
+</div>
+</div>
+</div>
+
+
+<div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="feature-info">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div class="modal fade" id="featureModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel2">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="feature-info2">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<div class="modal fade" id="wrangleModal" tabindex="-1" role="dialog" aria-labelledby="wrangleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-login" role="document">
+
+    <div class="modal-content">
+      <div class="card card-signup card-plain">
+      <div class="modal-header">
+        <div id="wrangleModalLabel" class="card-header card-header-info text-center" style="width:100%;">
+
+      <h4 class="card-title">Tidy data up with turf.js</h4>
+      <div class="social-line"> <a href="#pablo" class="btn btn-just-icon btn-link"><i class="mdi mdi-codepen text-white"></i></a> <a href="#pablo" class="btn btn-just-icon btn-link"><i class="mdi mdi-widgets text-white"></i></a></div></div></div>
+      <div class="card-body text-center">
+        <h5> select options to process your data by. Assumes input ARRAY. Default is features1</h5>
+      <form>
+        <div class="form-row">
+        <span class="bmd-form-group">
+          <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="text-info mdi mdi-city"></i>
+            </span>
+          </div>
+            <input type="text" class="form-control text-info" placeholder="somearray.features">
+          </div>
+        </span>
+        <span class="bmd-form-group">
+          <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="mdi mdi-city text-info"></i>
+            </span>
+          </div>
+            <input type="text" class="form-control text-info" placeholder="style.properties">
+          </div>
+        </span>
+      </div>
+          <div class="form-group text-info">
+            <label for="inputWrangle">Geometry Type</label>
+              <select id="inputWrangle" data-style="btn btn-link" class="text-info  form-control">
+                <option>Choose...</option>
+                <option>stringLine</option>
+                <option>multiStringLine</option>
+                <option>polygon</option>
+                <option>multiPolygon</option>
+              </select>
+            </div>
+            <div class="form-check form-check-inline ">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" id="flipbox" value="option1"> flip x->y
+                <span class="form-check-sign text-info">
+                    <span class="check"></span>
+                </span>
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label  text-info">
+                <input class="form-check-input  text-info"  type="checkbox" id="dupebox" value="option2"> DeDuplicate
+                <span data-color="azure" class="form-check-sign">
+                    <span data-color="azure" class="check"></span>
+                </span>
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" id="centbox" value="option3"> dbscan-centroid
+                <span class="form-check-sign">
+                    <span class="check check-info"></span>
+                </span>
+              </label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" >Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade bg-example-modal-lg" id="chartjsModal" tabindex="-1" role="dialog" style="right:10rem;" aria-labelledby="jschartModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="height:60vh; width:80vw;">
+    <div class="modal-content" style="width:50vw;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jschartModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <canvas id="jsChart" height="40vh" width="80vw"></canvas>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bg-example-modal-lg" id="c3Modal" tabindex="-1" role="dialog" style="right:10rem;" aria-labelledby="c3ModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="height:60vh; width:80vw;">
+    <div class="modal-content" style="width:50vw;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="c3ModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="c3chart" style="height:60vh;"></div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bg-example-modal-lg" id="c3Gauge" tabindex="-1" role="dialog" style="right:10rem;" aria-labelledby="c3gaugeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="height:60vh; width:80vw;">
+    <div class="modal-content" style="width:50vw;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="c3gaugeModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="c3gaugechart" style="height:70vh;"></div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="tractmodal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="chloromap"></div>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+  </div>
+</div>
+-->
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="d3modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="d3map"></div>
+    </div>
+  </div>
+</div>
+
+    <!--   Core JS Files   -->
+    <script src="custom/jquery.min.js"></script>
+    <script src="custom/popper.min.js"></script>
+    <script src="custom/bootstrap-material-design.min.js"></script>
+    <!--<script src="https://unpkg.com/default-passive-events"></script>-->
+    <script src="custom/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script src="https://rawgithub.com/mylen/leaflet.TileLayer.WMTS/master/leaflet-tilelayer-wmts.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+    <script src="https://d26b395fwzu5fz.cloudfront.net/3.2.3/keen.min.js?date=2015-02-19"></script>
+    <script src="custom/leaflet.markercluster.js"></script>
+    <script src="custom/geojson-minifier.js"></script>
+    <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="custom/Leaflet.Control.Custom.js"></script>
+    <script src="custom/leaflet-routing-machine.js"></script>
+    <script src="custom/Control.Geocoder.js"></script>
+    <script src="custom/poi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.js"></script>
+    <script src="custom/Leaflet.StyleEditor.min.js"></script>
+    <script src="custom/nouislider.min.js" type="text/javascript"></script>
+    <script src="custom/chartist.min.js"></script>
+    <script src="custom/bootstrap-notify.js"></script>
+    <script src="custom/material-dashboard.js"></script>
+    <script src="custom/censusdata.js"></script>
+    <script src="custom/charting.js"></script>
+    <script src="custom/demo.js"></script>
+    <script src="custom/school-app.js"></script>
+    <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+
+        $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+
+        window_width = $(window).width();
+
+        $('.fixed-plugin a').click(function(event) {
+          // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .active-color span').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-color', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .background-color .badge').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('background-color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-background-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .img-holder').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).parent('li').siblings().removeClass('active');
+          $(this).parent('li').addClass('active');
+
+
+          var new_image = $(this).find("img").attr('src');
+
+          if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            $sidebar_img_container.fadeOut('fast', function() {
+              $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+              $sidebar_img_container.fadeIn('fast');
+            });
+          }
+
+          if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $full_page_background.fadeOut('fast', function() {
+              $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+              $full_page_background.fadeIn('fast');
+            });
+          }
+
+          if ($('.switch-sidebar-image input:checked').length == 0) {
+            var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
+          }
+        });
+
+        $('.switch-sidebar-image input').change(function() {
+          $full_page_background = $('.full-page-background');
+
+          $input = $(this);
+
+          if ($input.is(':checked')) {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar_img_container.fadeIn('fast');
+              $sidebar.attr('data-image', '#');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page_background.fadeIn('fast');
+              $full_page.attr('data-image', '#');
+            }
+
+            background_image = true;
+          } else {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar.removeAttr('data-image');
+              $sidebar_img_container.fadeOut('fast');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page.removeAttr('data-image', '#');
+              $full_page_background.fadeOut('fast');
+            }
+
+            background_image = false;
+          }
+        });
+
+        $('.switch-sidebar-mini input').change(function() {
+          $body = $('body');
+
+          $input = $(this);
+
+          if (md.misc.sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            md.misc.sidebar_mini_active = false;
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+
+          } else {
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+
+            setTimeout(function() {
+              $('body').addClass('sidebar-mini');
+
+              md.misc.sidebar_mini_active = true;
+            }, 300);
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>
